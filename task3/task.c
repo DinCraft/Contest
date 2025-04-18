@@ -58,15 +58,21 @@ void METHOD_NO_ARGS(Queue, print)
 	printf("%d", element->data);
 }
 
-void METHOD_NO_ARGS(Queue, remove)
+int METHOD_NO_ARGS(Queue, remove)
 {
 	if (object->start == NULL)
 	{
-		return;
+		return 1;
 	}
 	struct SingleLinkedElement *start = object->start;
 	object->start = start->next;
 	free(start);
+	return 0;
+}
+
+void METHOD_NO_ARGS(Queue, free)
+{
+	while (!_method_Queue_remove(object));
 }
 
 int handle(struct Queue *queue, int n, int value)
@@ -135,5 +141,5 @@ int main()
 			printf("0\n");	
 		}
     }
-	
+	_method_Queue_free(&queue);
 }
