@@ -43,10 +43,6 @@ int METHOD_NO_ARGS(SingleLinkedCyclicList, get_length)
 
 void METHOD_NO_ARGS(SingleLinkedCyclicList, free)
 {
-    if (object == NULL)
-    {
-        return;
-    }
     struct SingleLinkedElement *element = object->head;
     if (element == NULL)
     {
@@ -127,7 +123,6 @@ void METHOD(SingleLinkedCyclicList, remove, struct SingleLinkedElement *element)
 {
     if (_method_SingleLinkedCyclicList_get_length(object) == 1)
     {
-        free(object->head);
         object->head = NULL;
         return;
     }
@@ -166,6 +161,11 @@ void METHOD_NO_ARGS(SingleLinkedCyclicList, print)
 // <element> must be an element from <object>
 void METHOD(SingleLinkedCyclicList, remove_from, struct SingleLinkedElement *element, int amount)
 {
+    if (_method_SingleLinkedCyclicList_get_length(object) <= amount)
+    {
+        _method_SingleLinkedCyclicList_free(object);
+        return;
+    }
     struct SingleLinkedElement *elem = element->next;
     struct SingleLinkedElement *next_elem = NULL;
     for (int i = 0; i < amount; i++)
@@ -180,6 +180,7 @@ void METHOD(SingleLinkedCyclicList, remove_from, struct SingleLinkedElement *ele
     }
 }
 
+#ifndef TESTS
 int main()
 {
     struct SingleLinkedCyclicList list;
@@ -209,6 +210,7 @@ int main()
     {
         printf("\n");
         _method_SingleLinkedCyclicList_print(&list);
+        return 0;
     }
     
     _method_SingleLinkedCyclicList_remove_from(&list, element, n);
@@ -220,3 +222,4 @@ int main()
     }
     _method_SingleLinkedCyclicList_print(&list);
 }
+#endif
