@@ -94,13 +94,89 @@ void METHOD(SingleLinkedCyclicList, append, int value)
 struct SingleLinkedElement *METHOD(SingleLinkedCyclicList, first_by_value, int value)
 {
     struct SingleLinkedElement *element = object->head;
-    while (element != NULL)
+    for (int i = 0; i < _method_SingleLinkedCyclicList_get_length(object) - 1; i++)
     {
         if (element->data == value)
         {
             return element;
         }
         element = element->next;
+    }
+    return NULL;
+}
+
+struct SingleLinkedElement *METHOD(SingleLinkedCyclicList, get_prev, struct SingleLinkedElement *element)
+{
+    struct SingleLinkedElement *e = element;
+    if (object->head == element)
+    {
+        for (int i = 0; i < _method_SingleLinkedCyclicList_get_length(object) - 1; i++)
+        {
+            e = e->next;
+        }
+        return e;
+    }
+    while (e->next != element)
+    {
+        e = e->next;
+    }
+    return e;
+}
+
+void METHOD(SingleLinkedCyclicList, remove, struct SingleLinkedElement *element)
+{
+    if (_method_SingleLinkedCyclicList_get_length(object) == 1)
+    {
+        free(object->head);
+        object->head = NULL;
+        return;
+    }
+    struct SingleLinkedElement *prev = _method_SingleLinkedCyclicList_get_prev(object, element);
+    // first
+    if (object->head == element)
+    {
+        object->head = element->next;
+        prev->next = object->head;
+        free(element);
+    }
+    // otherwise
+    else
+    {
+        prev->next = element->next;
+        free(element);
+    }
+    return;
+}
+
+void METHOD_NO_ARGS(SingleLinkedCyclicList, print)
+{
+    struct SingleLinkedElement *element = object->head;
+    if (element == NULL)
+    {
+        return;
+    }
+    for (int i = 0; i < _method_SingleLinkedCyclicList_get_length(object) - 1; i++)
+    {
+        printf("%d ", element->data);
+        element = element->next;
+    }
+    printf("%d", element->data);
+}
+
+// <element> must be an element from <object>
+void METHOD(SingleLinkedCyclicList, remove_from, struct SingleLinkedElement *element, int amount)
+{
+    struct SingleLinkedElement *elem = element->next;
+    struct SingleLinkedElement *next_elem = NULL;
+    for (int i = 0; i < amount; i++)
+    {
+        if (elem == NULL)
+        {
+            return;
+        }
+        next_elem = elem->next;
+        _method_SingleLinkedCyclicList_remove(object, elem);
+        elem = next_elem;
     }
 }
 
@@ -122,5 +198,25 @@ int main()
     }
     int k, n;
     scanf("%d\n%d", &k, &n);
+    if (list.head == NULL)
+    {
+        printf("the list is empty");
+        return 0;
+    }
+    _method_SingleLinkedCyclicList_print(&list);
+    struct SingleLinkedElement *element = _method_SingleLinkedCyclicList_first_by_value(&list, k);
+    if (element == NULL)
+    {
+        printf("\n");
+        _method_SingleLinkedCyclicList_print(&list);
+    }
     
+    _method_SingleLinkedCyclicList_remove_from(&list, element, n);
+    printf("\n");
+    if (_method_SingleLinkedCyclicList_get_length(&list) == 0)
+    {
+        printf("the list is empty");
+        return 0;
+    }
+    _method_SingleLinkedCyclicList_print(&list);
 }
