@@ -119,10 +119,35 @@ struct SingleLinkedElement *METHOD(SingleLinkedCyclicList, get_prev, struct Sing
     return e;
 }
 
+int METHOD(SingleLinkedCyclicList, exists, struct SingleLinkedElement *element)
+{
+    struct SingleLinkedElement *listElement = object->head;
+    if (listElement == NULL)
+    {
+        return 0;
+    }
+    
+    for (int i = 0; i < _method_SingleLinkedCyclicList_get_length(object); i++)
+    {
+        if (listElement == element)
+        {
+            return 1;
+        }
+        listElement = listElement->next;
+    }
+    return 0;
+}
+
+// <element> must be an element from <object>
 void METHOD(SingleLinkedCyclicList, remove, struct SingleLinkedElement *element)
 {
+    if (!_method_SingleLinkedCyclicList_exists(object, element))
+    {
+        return;
+    }
     if (_method_SingleLinkedCyclicList_get_length(object) == 1)
     {
+        free(object->head);
         object->head = NULL;
         return;
     }
@@ -161,6 +186,14 @@ void METHOD_NO_ARGS(SingleLinkedCyclicList, print)
 // <element> must be an element from <object>
 void METHOD(SingleLinkedCyclicList, remove_from, struct SingleLinkedElement *element, int amount)
 {
+    if (!_method_SingleLinkedCyclicList_exists(object, element))
+    {
+        return;
+    }
+    if (amount == 0)
+    {
+        return;
+    }
     if (_method_SingleLinkedCyclicList_get_length(object) <= amount)
     {
         _method_SingleLinkedCyclicList_free(object);
