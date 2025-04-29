@@ -87,7 +87,7 @@ void METHOD_NO_ARGS(Stack, free)
 
 void handle(struct Stack *stack, int n)
 {
-	int length = _method_Stack_get_length(stack);
+	int result = _method_Stack_get_length(stack);
 	if (n == 0)
 	{
 		return;
@@ -107,8 +107,9 @@ void handle(struct Stack *stack, int n)
 	{
 		for (int i = 1; i <= n; i++)
 		{
-			_method_Stack_push(stack, length + i);
+			_method_Stack_push(stack, result + i);
 		}
+		result += n;
 	}
 }
 
@@ -121,8 +122,8 @@ void main()
 	int zeros_only = 1;
     while (1)
     {
-        int result = scanf("%d", &n);
-        if (result == 0) {
+        int in = scanf("%d", &n);
+        if (in == 0) {
 			if (first | zeros_only)
 			{
 				printf("0\n");
@@ -146,4 +147,5 @@ void main()
 		}
     }
 	_method_Stack_free(&stack);
+	printf("Success\n");
 }
