@@ -11,7 +11,6 @@
 
 struct TreeElement
 {
-	int data;
 	struct TreeElement *L;
 	struct TreeElement *R;
 };
@@ -23,24 +22,61 @@ struct BinaryTree
 
 void CONSTRUCTOR(BinaryTree)
 {
-	object->root = NULL;
+	object->root = malloc(sizeof(struct TreeElement));
 }
 
-void METHOD_NO_ARGS(TreeElement, createTree)
+void CONSTRUCTOR(TreeElement)
 {
-	
+	object->L = NULL;
+	object->R = NULL;
 }
 
-void METHOD_NO_ARGS(BinaryTree, print)
+void METHOD(TreeElement, createTree, int side)
 {
-    printf("%d\n", object->root->data);
+	int n;
+	scanf("%d", &n);
+	if (n == 1)
+	{
+		struct TreeElement *element = malloc(sizeof(struct TreeElement));
+		_constructor_TreeElement(element);
+		if (side == -1)
+		{
+			object->L = element;
+			_method_TreeElement_createTree(object->L, -1);
+		}
+		else
+		{
+			object->R = element;
+			_method_TreeElement_createTree(object->R, 1);
+		}
+	}
+	else
+	{
+		if (side == -1)
+		{
+			_method_TreeElement_createTree(object, 1);
+		}
+	}
+}
+
+//     1
+//   1
+//     1
+// 1
+//     1
+//   1
+//     1
+//2^3-1
+void METHOD(BinaryTree, print, int depth)
+{
+
 }
 
 int main()
 {
 	struct BinaryTree tree;
 	_constructor_BinaryTree(&tree);
-	_method_TreeElement_createTree(tree.root);
-    _method_BinaryTree_print(&tree);
+	_method_TreeElement_createTree(tree.root, -1);
+    _method_BinaryTree_print(&tree, 0);
 	return 0;
 }
