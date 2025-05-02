@@ -5,14 +5,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct Queue
+#define METHOD_NO_ARGS(type, name) _method_##type##_##name(struct type *object)
+#define METHOD(type, name, ...) _method_##type##_##name(struct type *object, __VA_ARGS__)
+#define CONSTRUCTOR_NO_ARGS(type) _constructor_##type(struct type *object)
+#define CONSTRUCTOR(type, ...) _constructor_##type(struct type *object, __VA_ARGS__)
+
+struct Dequeue
 {
-    int data;
-    struct Queue *next;
-    struct Queue *prev;
+    struct DoubleLinkedElement *first;
+    struct DoubleLinkedElement *last;
 };
 
-void input(struct Queue *queue)
+struct DoubleLinkedElement
+{
+    int data;
+    struct DoubleLinkedElement *next;
+    struct DoubleLinkedElement *prev;
+};
+
+void METHOD_NO_ARGS(Dequeue, input)
 {
     char c;
     while (1)
@@ -23,32 +34,58 @@ void input(struct Queue *queue)
         }
         if (c == '.') {
             break;
-        }   
+        }
     }
 }
 
-void add_start(struct Queue *queue)
+void CONSTRUCTOR_NO_ARGS(Dequeue)
 {
-    
+    object->first = NULL;
+    object->last = NULL;
 }
 
-void add_end(struct Queue *queue)
+struct DoubleLinkedElement *_constructor_DoubleLinkedElement(int data, struct DoubleLinkedElement *next, struct DoubleLinkedElement *prev)
 {
-    
+    struct DoubleLinkedElement *element = malloc(sizeof(struct DoubleLinkedElement));
+    element->data = data;
+    element->next = next;
+    element->prev = prev;
+    return element;
 }
 
-void remove_start(struct Queue *queue)
+// -1 object is NULL
+int METHOD(Dequeue, add_start, int data)
 {
-    
+    if (object == NULL)
+    {
+        return -1;
+    }
+    if (object->first == NULL)
+    {
+        object->first = _constructor_DoubleLinkedElement(data, NULL, NULL);
+        object->last = object->first;
+        return 0;
+    }
+    struct DoubleLinkedElement *element = _constructor_DoubleLinkedElement(data, object->first, NULL);
+    object->first = element;
+    return 0;
 }
 
-void remove_end(struct Queue *queue)
+void METHOD_NO_ARGS(Dequeue, print)
 {
-    
+    struct DoubleLinkedElement *element = object->first;
+    while (element != NULL)
+    {
+        printf("%d ", element->data);
+        element = element->next;
+    }
 }
 
 void main()
 {
-    struct Queue *queue;
-    input(queue);
+    struct Dequeue dequeue;
+    _constructor_Dequeue(&dequeue);
+    _method_Dequeue_add_start(&dequeue, 1);
+    _method_Dequeue_add_start(&dequeue, 2);
+    _method_Dequeue_print(&dequeue);
 }
