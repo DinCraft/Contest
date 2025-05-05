@@ -55,6 +55,7 @@ void METHOD_NO_ARGS(SingleLinkedCyclicList, free)
     struct SingleLinkedElement *next = element->next;
     if (next == NULL)
     {
+        free(element);
         return;
     }
     int length = _method_SingleLinkedCyclicList_get_length(object);
@@ -114,7 +115,6 @@ int main()
     if (length == 0)
     {
         printf("0");
-        _method_SingleLinkedCyclicList_free(&list);
         return 0;
     }
     for (int i = 0; i < length - 1; i++)
@@ -123,6 +123,7 @@ int main()
         e = e->next;
     }
     printf("%d\n", e->data);
+
     e = list.head;
     int is_found = 0;
     for (int i = 0; i < length; i++)
