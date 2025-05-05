@@ -47,7 +47,7 @@ void METHOD(TreeElement, createTree, int side)
 		else
 		{
 			object->R = element;
-			_method_TreeElement_createTree(object->R, 1);
+			_method_TreeElement_createTree(object->R, -1);
 		}
 	}
 	else
@@ -67,9 +67,21 @@ void METHOD(TreeElement, createTree, int side)
 //   1
 //     1
 //2^3-1
-void METHOD(BinaryTree, print, int depth)
+void METHOD(TreeElement, print, int depth)
 {
-
+	if (object->R)
+	{
+		_method_TreeElement_print(object->R, depth + 1);
+	}
+	for (int i = 0; i < depth; i++)
+	{
+		printf("  ");
+	}
+	printf("1\n");
+	if (object->L)
+	{
+		_method_TreeElement_print(object->L, depth + 1);
+	}
 }
 
 int main()
@@ -77,6 +89,6 @@ int main()
 	struct BinaryTree tree;
 	_constructor_BinaryTree(&tree);
 	_method_TreeElement_createTree(tree.root, -1);
-    _method_BinaryTree_print(&tree, 0);
+	_method_TreeElement_print(tree.root, 0);
 	return 0;
 }
