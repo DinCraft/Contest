@@ -110,6 +110,32 @@ int METHOD_NO_ARGS(TreeElement, count_leaves)
 	return result;
 }
 
+int METHOD(TreeElement, max_depth, int d, int md)
+{
+	if (object->R)
+	{
+		md = _method_TreeElement_max_depth(object->R, d + 1, md > d + 1 ? md : d + 1);
+	}
+	if (object->L)
+	{
+		md = _method_TreeElement_max_depth(object->L, d + 1, md > d + 1 ? md : d + 1);
+	}
+	return md;
+}
+
+int METHOD(TreeElement, count_left_child_nodes, int counter)
+{
+	if (object->R)
+	{
+		counter = _method_TreeElement_count_left_child_nodes(object->R, counter);
+	}
+	if (object->L)
+	{
+		counter = _method_TreeElement_count_left_child_nodes(object->L, counter + 1);
+	}
+	return counter;
+}
+
 int main()
 {
 	struct BinaryTree tree;
@@ -117,10 +143,13 @@ int main()
 	_constructor_BinaryTree(&tree);
 	scanf("%d", &n);
 	_method_TreeElement_createTree(tree.root);
-	_method_TreeElement_print(tree.root, 0);
 	int verticies = _method_TreeElement_count_verticies(tree.root);
 	int leaves = _method_TreeElement_count_leaves(tree.root);
-	printf("verticies: %d\n", verticies);
-	printf("leaves: %d\n", leaves);
+	int max_depth = _method_TreeElement_max_depth(tree.root, 0, 0);
+	int left_child_nodes = _method_TreeElement_count_left_child_nodes(tree.root, 0);
+	printf("%d\n", verticies);
+	printf("%d\n", leaves);
+	printf("%d\n", max_depth);
+	printf("%d", left_child_nodes);
 	return 0;
 }
