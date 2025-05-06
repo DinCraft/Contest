@@ -31,7 +31,7 @@ void CONSTRUCTOR(TreeElement)
 	object->R = NULL;
 }
 
-void METHOD(TreeElement, createTree, int side)
+void METHOD_NO_ARGS(TreeElement, createTree)
 {
 	int n;
 	scanf("%d", &n);
@@ -39,23 +39,16 @@ void METHOD(TreeElement, createTree, int side)
 	{
 		struct TreeElement *element = malloc(sizeof(struct TreeElement));
 		_constructor_TreeElement(element);
-		if (side == -1)
-		{
-			object->L = element;
-			_method_TreeElement_createTree(object->L, -1);
-		}
-		else
-		{
-			object->R = element;
-			_method_TreeElement_createTree(object->R, -1);
-		}
+		object->L = element;
+		_method_TreeElement_createTree(object->L);
 	}
-	else
+	scanf("%d", &n);
+	if (n == 1)
 	{
-		if (side == -1)
-		{
-			_method_TreeElement_createTree(object, 1);
-		}
+		struct TreeElement *element = malloc(sizeof(struct TreeElement));
+		_constructor_TreeElement(element);
+		object->R = element;
+		_method_TreeElement_createTree(object->R);
 	}
 }
 
@@ -84,11 +77,50 @@ void METHOD(TreeElement, print, int depth)
 	}
 }
 
+int METHOD_NO_ARGS(TreeElement, count_verticies)
+{
+	int result = 0;
+	if (object->R)
+	{
+		result +=_method_TreeElement_count_verticies(object->R);
+	}
+	result++;
+	if (object->L)
+	{
+		result += _method_TreeElement_count_verticies(object->L);
+	}
+	return result;
+}
+
+int METHOD_NO_ARGS(TreeElement, count_leaves)
+{
+	int result = 0;
+	if (object->R)
+	{
+		result +=_method_TreeElement_count_leaves(object->R);
+	}
+	if (object->L)
+	{
+		result += _method_TreeElement_count_leaves(object->L);
+	}
+	if (!object->L & !object->R)
+	{
+		result++;
+	}
+	return result;
+}
+
 int main()
 {
 	struct BinaryTree tree;
+	int n;
 	_constructor_BinaryTree(&tree);
-	_method_TreeElement_createTree(tree.root, -1);
+	scanf("%d", &n);
+	_method_TreeElement_createTree(tree.root);
 	_method_TreeElement_print(tree.root, 0);
+	int verticies = _method_TreeElement_count_verticies(tree.root);
+	int leaves = _method_TreeElement_count_leaves(tree.root);
+	printf("verticies: %d\n", verticies);
+	printf("leaves: %d\n", leaves);
 	return 0;
 }
